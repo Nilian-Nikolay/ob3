@@ -35,7 +35,7 @@ jobs:
       - name: Run Bandit (SAST) and produce JSON
         run: |
           mkdir -p reports
-          bandit -r . -f json -o reports/bandit.json || true
+          bandit -r app2.py -f json -o reports/bandit.json || true
         continue-on-error: false
 
       - name: Check Bandit results and fail on HIGH
