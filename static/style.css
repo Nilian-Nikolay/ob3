@@ -1,0 +1,10 @@
+body { font-family: Arial, sans-serif; margin: 20px; }
+.note-title { font-weight: bold; font-size: 1.1em; }
+.note-content { margin: 8px 0; white-space: pre-wrap; } /* сохраняем переносы */
+.note-actions { margin-top: 6px; }
+.flashes { list-style: none; padding: 0; }
+.flashes li { padding: 6px; margin: 6px 0; border-radius: 4px; }
+.flash-success { background: #e0f8e9; }
+.flash-danger { background: #ffdede; }
+.flash-warning { background: #fff3cd; }
+.muted { color: #666; font-size: 0.9em; }
