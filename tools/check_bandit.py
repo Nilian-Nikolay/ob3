@@ -1,18 +1,19 @@
 import json
 import sys
 
-file_path = sys.argv[1]
+report_path = sys.argv[1]
 
-with open(file_path, 'r') as f:
-    report = json.load(f)
+with open(report_path, "r") as f:
+    data = json.load(f)
 
-high_issues = [i for i in report['results'] if i['issue_severity'] == 'HIGH']
+issues = data.get("results", [])
+high_issues = [i for i in issues if i.get("issue_severity") == "HIGH"]
 
 if high_issues:
-    print("❌ Найдены уязвимости HIGH! Merge запрещён.")
-    for i in high_issues:
-        print(f"{i['filename']}:{i['line_number']} - {i['issue_text']}")
-    sys.exit(1)  # <- вот это блокирует merge
+    print("❌ Найдены HIGH уязвимости!")
+    for issue in high_issues:
+        print(f"{issue['filename']}:{issue['line_number']} {issue['issue_text']}")
+    sys.exit(1)
 else:
-    print("✅ Уязвимостей HIGH не найдено")
+    print("✅ HIGH уязвимости не найдены, можно мержить.")
     sys.exit(0)
