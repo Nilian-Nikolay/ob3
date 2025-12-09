@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Список заметок</h2>
+
+{% if current_user_id %}
+  <h3>Добавить заметку</h3>
+  <form method="post" action="{{ url_for('add_note') }}">
+    {{ form.hidden_tag() }}
+    <div>
+      {{ form.title.label }}<br>
+      {{ form.title(size=60) }}
+    </div>
+    <div>
+      {{ form.content.label }}<br>
+      {{ form.content(rows=4, cols=60) }}
+    </div>
+    {{ form.submit() }}
+  </form>
+{% else %}
+  <p>Войдите, чтобы добавить заметки.</p>
+{% endif %}
+
+<ul class="notes">
+  {% for note in notes %}
+    <li>
+      <div class="note-title">{{ note.title }}</div>
+      <div class="note-meta">Создано: {{ note.created_at.strftime('%Y-%m-%d %H:%M') }} — автор: {{ note.owner.username }}</div>
+      <div class="note-content">{{ note.content }}</div>
+
+      <div class="note-actions">
+        {% if current_user_id == note.owner_id %}
+          <a href="{{ url_for('edit_note', note_id=note.id) }}">Редактировать</a>
+          <form method="post" action="{{ url_for('delete_note', note_id=note.id) }}" style="display:inline">
+            {{ delete_form.hidden_tag() }}
+            {{ delete_form.submit() }}
+          </form>
+        {% else %}
+          <span class="muted">У вас нет прав на редактирование этой заметки.</span>
+        {% endif %}
+      </div>
+    </li>
+  {% else %}
+    <li>Заметок нет.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

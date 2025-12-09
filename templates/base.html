@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>Заметки — безопасный пример</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header>
+    <h1>Заметки</h1>
+    <nav>
+        {% if current_username %}
+            <span>Вошёл: <strong>{{ current_username }}</strong></span>
+            <a href="{{ url_for('logout') }}">Выйти</a>
+        {% else %}
+            <a href="{{ url_for('login') }}">Войти</a>
+        {% endif %}
+    </nav>
+    <hr>
+</header>
+
+<main>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flashes">
+        {% for cat, msg in messages %}
+          <li class="flash-{{ cat }}">{{ msg }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    {% if show_login %}
+        <h2>Вход</h2>
+        <form method="post" action="{{ url_for('login') }}">
+            {{ login_form.hidden_tag() }}
+            {{ login_form.username.label }}<br>
+            {{ login_form.username(size=32) }}<br>
+            {{ login_form.password.label }}<br>
+            {{ login_form.password(size=32) }}<br><br>
+            {{ login_form.submit() }}
+        </form>
+        <p>Тестовые учётки: <strong>alice / alicepass</strong>, <strong>bob / bobpass</strong></p>
+    {% elif error_message %}
+        <p>{{ error_message }}</p>
+    {% else %}
+        {% block content %}{% endblock %}
+    {% endif %}
+</main>
+
+</body>
+</html>

@@ -1,0 +1,37 @@
+name: Security CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  setup:
+    name: Setup & Run Security Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install bandit pytest
+
+      - name: Run Bandit (SAST) and produce JSON
+        run: |
+          mkdir -p reports
+          bandit -r . -f json -o reports/bandit.json || true
+        continue-on-error: false
+
+      - name: Check Bandit results and fail on HIGH
+        run: |
+          python3 tools/check_bandit.py reports/bandit.json
